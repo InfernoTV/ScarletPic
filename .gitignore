@@ -1,5 +1,6 @@
 .models/
 .venv/
+.venv*/
 __pycache__/
 .netlify/
 *.pyc

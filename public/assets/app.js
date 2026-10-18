@@ -94,8 +94,9 @@ function updateHeader() {
   $('#result-count').replaceChildren(); const strong=document.createElement('strong');strong.textContent=filtered.length.toLocaleString();
   $('#result-count').append(strong,` ${filtered.length===1?'image':'images'}${state.view==='saved'?' saved':''}`);
   renderPagination();
-  const count=Object.keys(aiInfo.images||{}).length+Object.keys(importedAi).filter(id=>!aiInfo.images?.[id]).length;
-  $('#about-ai-status').textContent=count?`AI tags available for ${count.toLocaleString()} images.`:'AI tags have not been generated.';
+  const entries={...(aiInfo.images||{}),...importedAi};
+  const processed=Object.keys(entries).length,count=Object.values(entries).filter(tags=>Array.isArray(tags)&&tags.length>0).length;
+  $('#about-ai-status').textContent=processed?`${processed.toLocaleString()} images processed; ${count.toLocaleString()} with AI tags.`:'AI tags have not been generated.';
 }
 function renderPagination(){
   $('#pagination').hidden=pageView.total===0;
@@ -269,7 +270,9 @@ function updateViewerTags(){
   for(const name of ['computed','ai','post','manual'])$(`#viewer-${name}-tags`).replaceChildren();
   for(const tag of row.computedTags)addTagButton($('#viewer-computed-tags'),tag,'Measured image attribute');
   for(const item of row.aiTags)addTagButton($('#viewer-ai-tags'),item.tag,`AI prediction${typeof item.score==='number'?' ('+Math.round(item.score*100)+'%)':''}`);
-  $('#ai-tag-note').hidden=row.aiTags.length>0;$('#ai-source-label').textContent=row.aiTags.length?'predicted':'';
+  $('#ai-tag-note').hidden=row.aiTags.length>0;
+  $('#ai-tag-note').textContent=Object.hasOwn(importedAi,row.id)||Object.hasOwn(aiInfo.images||{},row.id)?'No predictions met the chosen thresholds.':'No AI tags generated for this image.';
+  $('#ai-source-label').textContent=row.aiTags.length?'predicted':'';
   for(const tag of row.postTags)addTagButton($('#viewer-post-tags'),tag,'Original post hashtag');
   if(!row.postTags.length){const span=document.createElement('span');span.className='detail-note';span.textContent='No post hashtags.';$('#viewer-post-tags').append(span);}
   for(const tag of row.userTags)addTagButton($('#viewer-manual-tags'),tag,'Your tag',true);

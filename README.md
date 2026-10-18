@@ -88,7 +88,9 @@ The site includes 16,340 media files: 320px cropped thumbnails and larger optimi
 
 Multicolor requires three hue groups covering at least 6.5% of the sample each. Monochrome has less than 5.5% chromatic coverage. The remaining images use limited palette. These labels are heuristics, not semantic AI classifications.
 
-The optional tool uses [SmilingWolf's WD14 model](https://huggingface.co/SmilingWolf/wd-swinv2-tagger-v3) for anime attributes and character predictions. It downloads model weights on first use, performs CPU inference locally, checkpoints progress, and resumes. Images are not uploaded. AI tags have not been generated for this delivery.
+The bundled dataset now includes **104,746 AI predictions across all 8,170 images**, averaging 12.82 predictions per image, with 2,689 distinct tags. 8,170 images were processed through DirectML on a Radeon RX 6700 XT. These tags are loaded automatically by the gallery. Character predictions remain unreviewed.
+
+The included tool uses [SmilingWolf's WD14 model](https://huggingface.co/SmilingWolf/wd-swinv2-tagger-v3) for anime attributes and character predictions. It downloads model weights on first use, runs inference locally, checkpoints progress, and resumes. Images are not uploaded. CPU and Windows DirectML providers are supported.
 
 ```sh
 python -m pip install -r tools/requirements-ai.txt
@@ -96,9 +98,23 @@ python tools/tag_ai.py --limit 10
 python tools/tag_ai.py
 ```
 
+For an AMD GPU on Windows, use a separate environment with the DirectML runtime:
+
+```powershell
+python -m venv .venv-dml
+.venv-dml\Scripts\python.exe -m pip install -r tools/requirements-ai-directml.txt
+.venv-dml\Scripts\python.exe tools/tag_ai.py --provider auto --batch 4
+```
+
+`--provider auto` prefers DirectML when installed and falls back to CPU if initialization or inference fails. `--provider directml` requires GPU execution-provider initialization and stops on failure; `--provider cpu` selects CPU explicitly. Device 0 is the default adapter; use `--device-id` for another adapter. DirectML may leave unsupported graph operations on CPU. The GPU was tested on a Radeon RX 6700 XT.
+
+Do not install `onnxruntime` and `onnxruntime-directml` into the same environment; both provide the same Python module. `--offline` uses cached model files without a network request. `--output` writes a separate JSON file for a trial without changing the published dataset.
+
 Results go to `public/data/ai-tags.json`. Redeploy the site to publish them, or import that JSON through **Tags & tools** for browser-local use. Model weights are cached outside `public/` and ignored by Git. Predictions can be wrong; review them before relying on character labels.
 
-General and character thresholds default to 0.35 and 0.85. WD14 is not a reliable anime-versus-photograph classifier; a CLIP-style model can complement it for broad visual styles. [TagGUI](https://github.com/jhc13/taggui) is another option for local batch tagging and review.
+General and character thresholds default to 0.35 and 0.85. Lowering `--threshold` accepts more general tags, with more false positives; `--character-threshold` controls character predictions separately. Higher thresholds keep fewer predictions. To change thresholds, back up the existing JSON and use a new `--output` file so incompatible runs cannot silently mix. Lowering a threshold requires inference again because only accepted predictions are saved. You can add personal tags in the browser independently of the model.
+
+WD14 is not a reliable anime-versus-photograph classifier; a CLIP-style model can complement it for broad visual styles. [TagGUI](https://github.com/jhc13/taggui) is another option for local batch tagging and review.
 
 ## Project layout
 
@@ -129,7 +145,7 @@ The interface uses self-hosted Panchang and Pilcrow Rounded, Tabler icons, and L
 
 `npm run check` covers catalogue counts, pagination boundaries, filter combinations, saved selection, search, tag normalization, sitemap URLs, local references, startup image loading rules, branding, and removal of source-profile links.
 
-JavaScript and Python syntax, media headers and dimensions, and archive CRCs have also been checked. Browser automation was blocked by the tool's URL policy in the build session, so visual and responsive browser behavior is not claimed as verified. The optional AI model has not been run; its CLI and syntax are checked.
+JavaScript and Python syntax, media headers and dimensions, and archive CRCs have also been checked. Browser automation was blocked by the tool's URL policy in the build session, so visual and responsive browser behavior is not claimed as verified. All 8,170 images have AI results. A 64-image CPU/DirectML comparison produced identical accepted tag sets, with shared scores differing by at most 0.0001. Coverage, score validity, tag uniqueness, and combined tag searches are checked. This is a consistency check, not an accuracy benchmark.
 
 ## Privacy and rights
 

@@ -1,0 +1,6 @@
+# Windows AMD/Intel/NVIDIA GPU option. Use a separate environment from the CPU
+# requirements: onnxruntime and onnxruntime-directml share an import namespace.
+Pillow>=10
+numpy>=1.26
+onnxruntime-directml>=1.18
+huggingface-hub>=0.24

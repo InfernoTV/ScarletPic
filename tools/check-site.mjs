@@ -97,4 +97,35 @@ for(const match of html.matchAll(/(?:href|src)="([^"#]+)"/g)){
 for(const file of ['rules.txt','robots.txt','sitemap.xml','404.html','_headers'])await fs.access(path.join(root,'public',file));
 const ai=JSON.parse(await read('public/data/ai-tags.json'));
 assert.equal(typeof ai.images,'object');
-console.log(JSON.stringify({passed:true,images:rows.length,mediaFiles,mediaBytes,pages:86,lastPageImages:10,pageSizes:[48,96,192],animeCaptionTagImages:1708,blueMulticolorImages:126,sitemapImageEntries:8170,browserQa:'Not performed: browser tool URL policy blocked observation.',aiInference:Object.keys(ai.images).length?'Tags present':'Not run; optional tool included.'},null,2));
+const knownIds=new Set(rows.map(row=>row.id));
+let aiPredictions=0;
+const distinctAiTags=new Set();
+for(const [id,tags] of Object.entries(ai.images)){
+  assert.ok(knownIds.has(id),`Unknown AI image ID: ${id}`);
+  assert.ok(Array.isArray(tags));
+  assert.equal(tags.length,new Set(tags.map(item=>item.tag)).size,`Duplicate AI tag on ${id}`);
+  for(let i=0;i<tags.length;i++){
+    const item=tags[i];
+    assert.equal(typeof item.tag,'string');assert.ok(item.tag.length>0);
+    assert.ok(['general','character'].includes(item.category));
+    assert.ok(Number.isFinite(item.score)&&item.score>=0&&item.score<=1);
+    const threshold=item.category==='character'?ai.parameters?.character_threshold:ai.parameters?.threshold;
+    if(threshold!==undefined)assert.ok(item.score+0.00005>=threshold);
+    if(i)assert.ok(tags[i-1].score>=item.score);
+    aiPredictions++;distinctAiTags.add(item.tag);
+  }
+}
+const aiCoverage=Object.keys(ai.images).length;
+if(process.argv.includes('--require-complete-ai'))assert.equal(aiCoverage,rows.length,'AI coverage must include every image');
+const aiRows=rows.map(row=>{
+  const tags=new Set([...row.tags,...(ai.images[row.id]||[]).map(item=>item.tag)]);
+  return {...row,tags,search:`${row.name} ${row.id} ${[...tags].join(' ')}`.toLowerCase().replaceAll('_',' ')};
+});
+const aiSearchResults={};
+if(ai.images['7284274130143186222-03']?.some(item=>item.tag==='glasses')){
+  for(const query of ['glasses','black hair glasses','squirtle','sonic the hedgehog']){
+    const matches=filterRows(aiRows,{...base,query});assert.ok(matches.length>0,query);
+    aiSearchResults[query]=matches.length;
+  }
+}
+console.log(JSON.stringify({passed:true,images:rows.length,mediaFiles,mediaBytes,pages:86,lastPageImages:10,pageSizes:[48,96,192],animeCaptionTagImages:1708,blueMulticolorImages:126,sitemapImageEntries:8170,aiCoverage,aiPredictions,distinctAiTags:distinctAiTags.size,aiSearchResults,browserQa:'Not performed: browser tool URL policy blocked observation.',aiInference:aiCoverage?`Tags present for ${aiCoverage} images`:'Not run; optional tool included.'},null,2));

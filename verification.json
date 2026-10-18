@@ -16,8 +16,17 @@
     "animeCaptionTagImages": 1708,
     "blueMulticolorImages": 126,
     "sitemapImageEntries": 8170,
+    "aiCoverage": 8170,
+    "aiPredictions": 104746,
+    "distinctAiTags": 2689,
+    "aiSearchResults": {
+      "glasses": 280,
+      "black hair glasses": 115,
+      "squirtle": 1,
+      "sonic the hedgehog": 37
+    },
     "browserQa": "Not performed: browser tool URL policy blocked observation.",
-    "aiInference": "Not run; optional tool included."
+    "aiInference": "Tags present for 8170 images"
   },
   "syntax": {
     "javascript": "Node --check passed",
@@ -32,12 +41,129 @@
   "source_profile_links_and_credits": "Removed from served code and catalogue; static validation passed.",
   "sitemap": "Generated with production origin at Netlify build time. Checked-in sitemap is pending domain assignment.",
   "browser_qa": "Not performed: browser tool URL policy blocked observation.",
-  "ai_inference": "Not run, per user choice. Optional local WD14 tool included.",
+  "ai_inference": "Complete: 8,170 images processed through DirectML; 0 through CPU fallback.",
   "design": {
     "reference": "Supplied yume-taste-skill.md",
     "DESIGN_VARIANCE": 6,
     "MOTION_INTENSITY": 5,
     "VISUAL_DENSITY": 7,
     "foundation": "Buildless native HTML/CSS/JS, self-hosted Tabler and Lenis; user aesthetic, not an official design-system implementation."
+  },
+  "ai_summary": {
+    "images": 8170,
+    "predictions": 104746,
+    "distinct_tags": 2689,
+    "mean_tags": 12.82,
+    "median_tags": 12.0,
+    "min_tags": 0,
+    "max_tags": 44,
+    "zero_tag_images": 3,
+    "categories": {
+      "general": 103502,
+      "character": 1244
+    },
+    "runtime": {
+      "provider": "directml",
+      "processed_this_run": 8170,
+      "elapsed_seconds": 682.91,
+      "images_per_second": 11.96,
+      "batch_size": 4,
+      "gpu_images": 8170
+    },
+    "trial_cpu_images": 100,
+    "delivered_gpu_images": 8170,
+    "delivered_cpu_images": 0,
+    "cpu_gpu_comparison": {
+      "images": 64,
+      "matching_tag_sets": 64,
+      "maximum_shared_score_difference": 0.0001
+    },
+    "top_tags": [
+      [
+        "solo",
+        6802
+      ],
+      [
+        "male_focus",
+        5542
+      ],
+      [
+        "1boy",
+        5494
+      ],
+      [
+        "looking_at_viewer",
+        2379
+      ],
+      [
+        "upper_body",
+        2004
+      ],
+      [
+        "black_hair",
+        1886
+      ],
+      [
+        "short_hair",
+        1819
+      ],
+      [
+        "monochrome",
+        1395
+      ],
+      [
+        "simple_background",
+        1332
+      ],
+      [
+        "1girl",
+        1217
+      ],
+      [
+        "no_humans",
+        1199
+      ],
+      [
+        "black_background",
+        1152
+      ],
+      [
+        "portrait",
+        1141
+      ],
+      [
+        "shirt",
+        1115
+      ],
+      [
+        "sky",
+        1004
+      ],
+      [
+        "smile",
+        941
+      ],
+      [
+        "close-up",
+        924
+      ],
+      [
+        "closed_mouth",
+        913
+      ],
+      [
+        "greyscale",
+        862
+      ],
+      [
+        "holding",
+        833
+      ]
+    ],
+    "thresholds": {
+      "threshold": 0.35,
+      "character_threshold": 0.85
+    },
+    "quality_note": "Predictions are unreviewed. A spot-check observed Charmander/Charizard confusion; character tags can be wrong."
   }
 }
