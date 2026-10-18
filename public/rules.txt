@@ -1,0 +1,22 @@
+ScarletPic
+
+Collection behavior
+- Browse through the page controls or combine the color, palette and tag filters.
+- Favorites and personal tags are stored in the current browser. Export a backup to move them.
+- The website does not upload visitor images or personal tags.
+
+Automation
+- Read robots.txt and honor HTTP cache headers.
+- Use thumbnail files for previews. Request larger images when needed.
+- Keep request concurrency low and back off if the host responds with 429 or 503.
+
+Tag data
+- Color and palette labels are measurements and heuristics.
+- Imported caption tags can describe a group rather than one image.
+- Optional AI tags are predictions and can be reviewed or replaced.
+
+Rights
+- Hosting a file does not grant additional rights to the artwork.
+- Third-party font and library notices are included with the project.
+
+This file describes collection behavior and usage guidance. It is not an access-control or rate-limiting mechanism.

@@ -1,0 +1,13 @@
+{
+  "name": "scarletpic",
+  "private": true,
+  "type": "module",
+  "description": "A paginated image gallery with color and palette filters, viewport loading and local favorites.",
+  "scripts": {
+    "build": "node tools/build-site.mjs",
+    "check": "node tools/check-site.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

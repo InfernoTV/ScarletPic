@@ -1,0 +1,43 @@
+{
+  "status": "passed_local_checks",
+  "brand": "ScarletPic",
+  "checks": {
+    "passed": true,
+    "images": 8170,
+    "mediaFiles": 16340,
+    "mediaBytes": 862045044,
+    "pages": 86,
+    "lastPageImages": 10,
+    "pageSizes": [
+      48,
+      96,
+      192
+    ],
+    "animeCaptionTagImages": 1708,
+    "blueMulticolorImages": 126,
+    "sitemapImageEntries": 8170,
+    "browserQa": "Not performed: browser tool URL policy blocked observation.",
+    "aiInference": "Not run; optional tool included."
+  },
+  "syntax": {
+    "javascript": "Node --check passed",
+    "python": "AST parse passed",
+    "netlify_toml": "parsed and settings checked",
+    "sitemap_xml": "parsed"
+  },
+  "media_integrity": {
+    "all_riff_headers_and_dimensions_valid": true,
+    "scope": "Verified during asset generation; media files unchanged by rebranding and pagination."
+  },
+  "source_profile_links_and_credits": "Removed from served code and catalogue; static validation passed.",
+  "sitemap": "Generated with production origin at Netlify build time. Checked-in sitemap is pending domain assignment.",
+  "browser_qa": "Not performed: browser tool URL policy blocked observation.",
+  "ai_inference": "Not run, per user choice. Optional local WD14 tool included.",
+  "design": {
+    "reference": "Supplied yume-taste-skill.md",
+    "DESIGN_VARIANCE": 6,
+    "MOTION_INTENSITY": 5,
+    "VISUAL_DENSITY": 7,
+    "foundation": "Buildless native HTML/CSS/JS, self-hosted Tabler and Lenis; user aesthetic, not an official design-system implementation."
+  }
+}

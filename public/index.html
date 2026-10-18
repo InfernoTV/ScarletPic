@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#060608">
+  <meta name="description" content="The ScarletPic image archive. Browse 8,170 images by color, palette and tags. Save favorites and find your next frame.">
+  <meta name="robots" content="index,follow">
+  <meta property="og:title" content="ScarletPic | Image archive">
+  <meta property="og:type" content="website">
+  <meta property="og:description" content="Explore 8,170 images by color, palette and tags.">
+  <title>ScarletPic | Image archive</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/panchang-600.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/pilcrow-rounded.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/style.css">
+  <script defer src="assets/vendor/lenis.min.js"></script>
+  <script type="module" src="assets/app.js"></script>
+</head>
+<body>
+  <canvas id="waves" aria-hidden="true"></canvas>
+  <div class="ambient" aria-hidden="true"></div>
+  <div id="loading-cover" class="loading-cover" role="status" aria-live="polite">
+    <div class="loading-mark"><span>ScarletPic<span class="red">.</span></span><div class="loading-line"><i id="loading-progress"></i></div></div>
+    <p id="loading-message">Opening the archive</p>
+    <button id="boot-retry" class="key" hidden>Try again</button>
+  </div>
+  <div class="app-shell">
+    <header class="topbar glass">
+      <a class="wordmark" href="./" aria-label="ScarletPic home">ScarletPic<span>.</span></a>
+      <nav class="nav-track" aria-label="Collection">
+        <span class="nav-glider" id="nav-glider" aria-hidden="true"></span>
+        <button data-view="all" class="nav-button active" aria-current="page">Explore</button>
+        <button data-view="saved" class="nav-button">Saved <span id="nav-saved-count">0</span></button>
+      </nav>
+      <div class="topbar-right">
+        <button class="icon-button" id="about-button" aria-label="Tags and tools" title="Tags and tools"><svg class="icon"><use href="assets/icons.svg#info-circle"/></svg></button>
+      </div>
+    </header>
+    <aside class="sidebar glass" id="sidebar" aria-label="Image filters">
+      <div class="sidebar-head"><span class="sidebar-label">Make it yours</span><button class="icon-button mobile-only" id="close-filters" aria-label="Close filters"><svg class="icon"><use href="assets/icons.svg#x"/></svg></button></div>
+      <h2>The archive<span class="red">.</span></h2>
+      <p class="sidebar-description">A color. A feeling.<br>Your next favorite.</p>
+      <div id="filter-controls" class="filter-controls"></div>
+      <button class="reset-button" id="reset-filters"><svg class="icon"><use href="assets/icons.svg#refresh"/></svg> Reset filters</button>
+      <div class="sidebar-bottom">
+        <div class="collection-size"><strong id="collection-count" title="8170 images">8.1k</strong><span>images to explore</span></div>
+        <div class="sidebar-rule"></div>
+        <p>Pick a frame.<br>Keep the ones you love.</p>
+        <span class="local-note"><svg class="icon"><use href="assets/icons.svg#device-floppy"/></svg> Favorites stay in this browser</span>
+      </div>
+    </aside>
+    <button id="sidebar-scrim" class="sidebar-scrim" aria-label="Close filters" tabindex="-1" hidden></button>
+    <main class="workspace">
+      <section class="workspace-heading">
+        <div><h1>Find your <span>frame.</span></h1><p>Browse by color, palette, or tags.</p></div>
+        <button class="key shuffle-button" id="shuffle-button"><svg class="icon"><use href="assets/icons.svg#arrows-shuffle"/></svg> Surprise me</button>
+      </section>
+      <div class="toolbar">
+        <div class="search-field" data-smooth-caret>
+          <svg class="icon"><use href="assets/icons.svg#search"/></svg>
+          <input id="search" type="search" placeholder="Search anime, red, a tag..." autocomplete="off" spellcheck="false" aria-label="Search images and tags">
+          <span class="smooth-caret" aria-hidden="true"></span><kbd>/</kbd>
+          <button id="clear-search" class="clear-search" aria-label="Clear search" hidden><svg class="icon"><use href="assets/icons.svg#x"/></svg></button>
+        </div>
+        <button id="mobile-filters" class="icon-button mobile-only" aria-label="Open filters"><svg class="icon"><use href="assets/icons.svg#adjustments-horizontal"/></svg></button>
+        <div class="density-track" aria-label="Image size"><span class="density-glider" aria-hidden="true"></span>
+          <button data-density="comfortable" class="active" aria-label="Large thumbnails" title="Large thumbnails" aria-pressed="true"><svg class="icon"><use href="assets/icons.svg#photo"/></svg></button>
+          <button data-density="compact" aria-label="Compact thumbnails" title="Compact thumbnails" aria-pressed="false"><svg class="icon"><use href="assets/icons.svg#layout-grid"/></svg></button>
+        </div>
+      </div>
+      <div class="results-bar"><span id="result-count" aria-live="polite">Loading images</span><div id="active-filters" class="active-filters"></div></div>
+      <div id="gallery-viewport" class="gallery-viewport" tabindex="0" aria-label="Image gallery">
+        <div id="gallery-grid" class="gallery-grid" role="list" aria-label="Images"></div>
+        <div id="empty-state" class="empty-state" hidden>
+          <div class="empty-icon"><svg class="icon"><use href="assets/icons.svg#photo"/></svg></div>
+          <h2 id="empty-title">No images match.</h2><p id="empty-description">Try another color or a shorter search.</p>
+          <button id="empty-reset" class="key">Clear filters</button>
+        </div>
+      </div>
+      <footer id="pagination" class="pagination" aria-label="Gallery pagination">
+        <span id="pagination-status" class="pagination-status" aria-live="polite">Showing 0 images</span>
+        <nav class="pagination-nav" aria-label="Gallery pages">
+          <button id="page-previous" class="page-arrow" aria-label="Previous page" disabled><svg class="icon"><use href="assets/icons.svg#chevron-left"/></svg></button>
+          <div id="page-numbers" class="page-numbers"><span id="page-glider" class="page-glider" aria-hidden="true"></span></div>
+          <button id="page-next" class="page-arrow" aria-label="Next page" disabled><svg class="icon"><use href="assets/icons.svg#chevron-right"/></svg></button>
+        </nav>
+        <button id="page-size-trigger" class="filter-trigger page-size-trigger" aria-label="Images per page" aria-haspopup="listbox" aria-expanded="false"><span id="page-size-label">96 / page</span><svg class="icon"><use href="assets/icons.svg#chevron-down"/></svg></button>
+      </footer>
+    </main>
+  </div>
+  <dialog id="viewer" class="viewer-dialog" aria-labelledby="viewer-title">
+    <div class="viewer-layout">
+      <div class="viewer-stage" id="viewer-stage">
+        <div class="viewer-skeleton skeleton" aria-hidden="true"></div>
+        <img id="viewer-image" alt="" decoding="async">
+        <div class="viewer-image-error" id="viewer-image-error" hidden><p>The image could not load.</p><button class="key" id="retry-viewer-image">Retry</button></div>
+        <button class="viewer-arrow prev" id="previous-image" aria-label="Previous image"><svg class="icon"><use href="assets/icons.svg#chevron-left"/></svg></button>
+        <button class="viewer-arrow next" id="next-image" aria-label="Next image"><svg class="icon"><use href="assets/icons.svg#chevron-right"/></svg></button>
+      </div>
+      <div class="viewer-details">
+        <div class="viewer-heading"><span class="sidebar-label">In focus</span><button class="icon-button" id="close-viewer" aria-label="Close image"><svg class="icon"><use href="assets/icons.svg#x"/></svg></button></div>
+        <h2 id="viewer-title"></h2><p class="viewer-dimensions" id="viewer-dimensions"></p>
+        <div class="viewer-actions"><button class="key" id="viewer-save"><svg class="icon"><use href="assets/icons.svg#heart"/></svg><span>Save</span></button><a class="secondary-button" id="viewer-download" download><svg class="icon"><use href="assets/icons.svg#download"/></svg> WebP</a></div>
+        <section class="detail-section"><h3>Palette</h3><div id="viewer-palette" class="viewer-palette"></div><div class="average-color"><span id="viewer-average-swatch"></span><div><span>Average color</span><button id="copy-color" title="Copy hex color"></button></div></div></section>
+        <section class="detail-section"><h3>Image tags</h3><div id="viewer-computed-tags" class="tag-list"></div></section>
+        <section class="detail-section" id="ai-tag-section"><h3>AI tags <span id="ai-source-label"></span></h3><div id="viewer-ai-tags" class="tag-list"></div><p class="detail-note" id="ai-tag-note">No AI tags generated for this image.</p></section>
+        <section class="detail-section"><h3>Caption tags</h3><div id="viewer-post-tags" class="tag-list"></div><p class="detail-note">Imported from captions. May describe a group rather than this image.</p></section>
+        <section class="detail-section"><h3>Your tags</h3><div id="viewer-manual-tags" class="tag-list"></div><form id="add-tag-form" class="tag-input-row"><div class="tag-input-field" data-smooth-caret><input id="tag-input" placeholder="Add a tag" maxlength="50" autocomplete="off" aria-label="New image tag"><span class="smooth-caret" aria-hidden="true"></span></div><button class="icon-button" type="submit" aria-label="Add tag"><svg class="icon"><use href="assets/icons.svg#plus"/></svg></button></form></section>
+      </div>
+    </div>
+  </dialog>
+  <dialog id="about-dialog" class="about-dialog glass" aria-labelledby="about-heading">
+    <div class="viewer-heading"><span class="sidebar-label">Tags & tools</span><button id="close-about" class="icon-button" aria-label="Close information"><svg class="icon"><use href="assets/icons.svg#x"/></svg></button></div>
+    <h2 id="about-heading">A little order.<br>A lot to explore.</h2>
+    <p>Color comes from every pixel's average. Palette tags look at the spread of colors. Caption tags come from the creator.</p>
+    <div class="about-note"><svg class="icon"><use href="assets/icons.svg#tag"/></svg><div><strong id="about-ai-status">AI tags have not been generated.</strong><p>The included WD14 tool can add anime attributes and character predictions. You can also import an AI tags file here.</p></div></div>
+    <h3>Your collection stays yours</h3><p>Saved images and your tags stay in this browser. Export a backup to keep them or move them to another browser. Nothing is uploaded.</p>
+    <div class="about-actions"><button id="export-data" class="key"><svg class="icon"><use href="assets/icons.svg#download"/></svg> Export my data</button><button id="import-data" class="secondary-button"><svg class="icon"><use href="assets/icons.svg#upload"/></svg> Import tags / data</button></div>
+    <input id="import-file" type="file" accept=".json,application/json" hidden>
+    <div class="about-footer"><span>Optimized WebP images. Original JPEGs are in your backup.</span><span>No remote fonts, analytics, or model requests.</span></div>
+  </dialog>
+  <div id="toast" class="toast glass" popover="manual" role="status" aria-live="polite"><svg class="icon"><use href="assets/icons.svg#check"/></svg><span></span><div class="toast-fuse"></div></div>
+  <noscript><div class="noscript-message">JavaScript is needed to browse this gallery. All image files are also available in the media folder.</div></noscript>
+</body>
+</html>

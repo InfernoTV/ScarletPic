@@ -1,0 +1,5 @@
+# ScarletPic
+User-agent: *
+Allow: /
+
+# Sitemap URL is added automatically during the Netlify build.
